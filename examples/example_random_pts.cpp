@@ -8,7 +8,7 @@ int main( ) {
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(1.0, 2.0);
+    std::normal_distribution<> dis( 0.5 , 0.25 );
 
     int n_samples;
     std::cout << "enter n_samples : ";

@@ -42,6 +42,12 @@ class BoundingBox {
         std::array<double,2> ne_;
         std::array<double,2> se_;
 
+        std::array<double,2> mpt_left() const;
+        std::array<double,2> mpt_right() const;
+        std::array<double,2> mpt_top() const;
+        std::array<double,2> mpt_bottom() const;
+        std::array<double,2> center() const;
+
 };
 
 
@@ -79,7 +85,7 @@ class QuadTree {
 
     public:
 
-        QuadTree( const Data2D& data , int bucketsize );
+        QuadTree( const Data2D& data , const BoundingBox& bbox , int bucketsize );
         ~QuadTree();
 
         BoundingBox get_bounding_box() { return bbox_; };

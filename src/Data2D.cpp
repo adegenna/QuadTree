@@ -116,7 +116,7 @@ vector<double> Data2D::get_vector_y() const {
 
     for ( auto xyi : data_ ) {
 
-        vy.push_back( xyi[0] );
+        vy.push_back( xyi[1] );
 
     }
 

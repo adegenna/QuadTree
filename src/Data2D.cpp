@@ -45,9 +45,14 @@ void Data2D::write_to_csv( const string &filename ) const {
 
 Data2D Data2D::compute_data_in_bbox( const BoundingBox& bbox ) const {
 
+    vector<array<double,2>> bbox_xy;
+    
+    copy_if( data_.begin() , data_.end() , back_inserter(bbox_xy) , [ bbox ]( array<double,2> xy ){ return bbox.is_in_bbox( xy ); } );
+
     Data2D bbox_data;
 
-    copy_if( data_.begin() , data_.end() , back_inserter( bbox_data ) , [ bbox ]( array<double,2> xy ){ return bbox.is_in_bbox( xy ); } );
+    for ( auto xyi : bbox_xy )
+        bbox_data.push_back( xyi );
 
     return bbox_data;
 

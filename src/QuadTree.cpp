@@ -26,3 +26,31 @@ QuadTree::QuadTree( const Data2D& data , const BoundingBox& bbox , int bucketsiz
 QuadTree::~QuadTree() {
 
 };
+
+void QuadTree::write_to_file( const string& filename ) const {
+
+    ofstream outfile_ij( filename , ios_base::app );
+    
+    BoundingBox bbox = get_bounding_box();
+
+    outfile_ij << "bucket" << endl;
+    outfile_ij << "sw : " << bbox.get_sw()[0] << " , " << bbox.get_sw()[1] << endl;
+    outfile_ij << "nw : " << bbox.get_nw()[0] << " , " << bbox.get_nw()[1] << endl;
+    outfile_ij << "ne : " << bbox.get_ne()[0] << " , " << bbox.get_ne()[1] << endl;
+    outfile_ij << "se : " << bbox.get_se()[0] << " , " << bbox.get_se()[1] << endl;
+
+    outfile_ij.close();
+
+    if ( child_sw_ != nullptr )
+        child_sw_->write_to_file( filename );
+
+    if ( child_nw_ != nullptr )
+        child_nw_->write_to_file( filename );
+
+    if ( child_ne_ != nullptr )
+        child_ne_->write_to_file( filename );
+
+    if ( child_se_ != nullptr )
+        child_se_->write_to_file( filename );
+
+};

@@ -16,9 +16,11 @@ class QuadTree {
         QuadTree( const Data2D& data , const BoundingBox& bbox , int bucketsize );
         ~QuadTree();
 
-        BoundingBox get_bounding_box() { return bbox_; };
+        BoundingBox get_bounding_box() const { return bbox_; };
 
         Data2D compute_bucket_neighbors( const Data2D& query );
+
+        void write_to_file( const std::string& filename ) const;
 
     private:
 

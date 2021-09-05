@@ -28,6 +28,8 @@ class BoundingBox {
         BoundingBox compute_quaddiv_ne() const;
         BoundingBox compute_quaddiv_se() const;
 
+        bool is_in_bbox( const std::array<double,2>& xy ) const;
+
     private:
 
         void assert_valid_coordinates( const std::array<double,2>& sw , 
@@ -51,13 +53,13 @@ class Data2D {
         Data2D();
         ~Data2D();
 
-        void push( const std::array<double,2>& xy );
+        void push_back( const std::array<double,2>& xy );
         
         std::array<double,2> get_next_point();
 
         BoundingBox compute_bbox() const;
 
-        Data2D compute_data_in_bbox( BoundingBox bbox ) const;
+        Data2D compute_data_in_bbox( const BoundingBox& bbox ) const;
 
         int size() const { return data_.size(); };
 
@@ -96,7 +98,7 @@ class QuadTree {
         std::shared_ptr<QuadTree> child_nw_;
         std::shared_ptr<QuadTree> child_ne_;
         std::shared_ptr<QuadTree> child_se_;
-                
+
 };
 
 #endif

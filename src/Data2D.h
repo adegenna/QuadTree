@@ -28,6 +28,14 @@ class Data2D {
 
         void write_to_csv( const std::string& filename ) const;
 
+        double compute_min_x() const;
+        double compute_min_y() const;
+        double compute_max_x() const;
+        double compute_max_y() const;
+
+        std::vector<double> get_vector_x() const;
+        std::vector<double> get_vector_y() const;
+
     private:
 
         std::vector< std::array<double,2> > data_;

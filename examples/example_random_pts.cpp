@@ -1,6 +1,8 @@
 #include "../src/QuadTree.h"
 #include <random>
 #include <iostream>
+#include <math.h>
+
 
 int main( ) {
 
@@ -8,7 +10,7 @@ int main( ) {
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<> dis( 0.5 , 0.25 );
+    std::normal_distribution<> dis( 0.0 , 0.05 );
 
     int n_samples;
     std::cout << "enter n_samples : ";
@@ -16,7 +18,10 @@ int main( ) {
 
     for ( int i=0; i<n_samples; i++ ) {
 
-        data.push_back( std::array<double,2>{ dis(gen) , dis(gen) } );
+        double xi = float(i) / n_samples;
+        double yi = 0.4 * sin( 2 * M_PI * float(i)/n_samples ) + dis(gen);
+
+        data.push_back( std::array<double,2>{ xi , yi } );
 
     }
 

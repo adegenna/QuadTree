@@ -51,12 +51,16 @@ def main( f_qt : str , f_data : str ):
     data    = np.genfromtxt( f_data , delimiter=',' )
     buckets = read_qt_buckets( f_qt )
     
-    plt.plot( data[:,0] , data[:,1] , 'o' )
+    plt.scatter( data[:,0] , data[:,1] , s=4 )
 
     for boxi in buckets:
         plt.plot( boxi.x , boxi.y , 'b' )
 
     plt.gca().set_aspect('equal')
+    plt.xticks([])
+    plt.yticks([])
+
+    plt.tight_layout()
 
     plt.show()
 

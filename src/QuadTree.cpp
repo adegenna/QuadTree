@@ -5,6 +5,7 @@
 using namespace std;
 
 
+
 BoundingBox::BoundingBox( const std::array<double,2>& sw , 
                           const std::array<double,2>& nw ,
                           const std::array<double,2>& ne ,
@@ -29,6 +30,8 @@ void BoundingBox::assert_valid_coordinates( const std::array<double,2>& sw ,
     assert( (ne[0] == se[0]) && (ne[1] == nw[1]) );
 
 };
+
+
 
 Data2D::Data2D() {
     
@@ -63,3 +66,24 @@ void Data2D::write_to_csv( const std::string &filename ) const {
     outfile_ij.close();
 
 };
+
+
+
+QuadTree::QuadTree( const Data2D& data , int bucketsize ) 
+    : data_(data) , bbox_(data.compute_bbox()) , k_(bucketsize) {
+
+    if ( data_.size() > k_ ) {
+
+        child_sw_ = make_shared<QuadTree>( QuadTree( data_.compute_data_in_bbox( bbox_.compute_quaddiv_sw() ) , k_ ) );
+        child_nw_ = make_shared<QuadTree>( QuadTree( data_.compute_data_in_bbox( bbox_.compute_quaddiv_nw() ) , k_ ) );
+        child_ne_ = make_shared<QuadTree>( QuadTree( data_.compute_data_in_bbox( bbox_.compute_quaddiv_ne() ) , k_ ) );
+        child_se_ = make_shared<QuadTree>( QuadTree( data_.compute_data_in_bbox( bbox_.compute_quaddiv_se() ) , k_ ) );
+
+    }
+
+};
+
+QuadTree::~QuadTree() {
+
+};
+

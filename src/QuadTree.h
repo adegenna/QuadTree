@@ -23,6 +23,11 @@ class BoundingBox {
         std::array<double,2> get_ne() { return ne_; };
         std::array<double,2> get_se() { return se_; };
 
+        BoundingBox compute_quaddiv_sw() const;
+        BoundingBox compute_quaddiv_nw() const;
+        BoundingBox compute_quaddiv_ne() const;
+        BoundingBox compute_quaddiv_se() const;
+
     private:
 
         void assert_valid_coordinates( const std::array<double,2>& sw , 
@@ -50,6 +55,12 @@ class Data2D {
         
         std::array<double,2> get_next_point();
 
+        BoundingBox compute_bbox() const;
+
+        Data2D compute_data_in_bbox( BoundingBox bbox ) const;
+
+        int size() const { return data_.size(); };
+
         void write_to_csv( const std::string& filename ) const;
 
     private:
@@ -66,10 +77,10 @@ class QuadTree {
 
     public:
 
-        QuadTree( const Data2D& data );
+        QuadTree( const Data2D& data , int bucketsize );
         ~QuadTree();
 
-        BoundingBox get_bounding_box() { return self_bbox_; };
+        BoundingBox get_bounding_box() { return bbox_; };
 
         Data2D compute_bucket_neighbors( const Data2D& query );
 
@@ -77,13 +88,15 @@ class QuadTree {
 
         Data2D data_;
 
-        BoundingBox self_bbox_;
+        BoundingBox bbox_;
+
+        int k_;
 
         std::shared_ptr<QuadTree> child_sw_;
         std::shared_ptr<QuadTree> child_nw_;
         std::shared_ptr<QuadTree> child_ne_;
         std::shared_ptr<QuadTree> child_se_;
-        
+                
 };
 
 #endif

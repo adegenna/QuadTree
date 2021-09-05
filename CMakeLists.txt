@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(lagrangiansolver)
+project(quadtree)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,11 +11,8 @@ endif()
 add_definitions( -DSRCDIR=\"${CMAKE_SOURCE_DIR}/\")
 
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -Wall -Werror=reorder")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -g -DBOOST_LOG_DYN_LINK -DNDEBUG")
 
-include_directories( ${CMAKE_SOURCE_DIR}
-                     ${GTEST_INCLUDE_DIRS}
-)
+include_directories( ${CMAKE_SOURCE_DIR} )
 
 add_executable( ex_rand
   examples/example_random_pts.cpp

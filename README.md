@@ -24,7 +24,7 @@ python plot_qt.py
 
 This example should compute a quadtree on noisy sinusoidal data:
 
-![sinqt](https://user-images.githubusercontent.com/2964258/132142832-51bf6030-91fb-4fbb-8fb0-7461d8ded9c8.png)
+![Figure_1](https://user-images.githubusercontent.com/2964258/132262641-1447c047-f2eb-4fb2-a471-793835a84718.png)
 
 https://user-images.githubusercontent.com/2964258/132245460-8ced6ee5-c2aa-40ff-bc7d-6f5adec5829b.mp4
 

@@ -27,7 +27,9 @@ int main( ) {
 
     QuadTree qt = QuadTree( data , data.compute_bbox() , 8 );
 
-    qt.write_to_file_bf( "qt.out" );
+    for ( int i=0; i<8; i++ ){
+        qt.write_to_file_bf( "qt_level_" + std::to_string(i+1) + ".out" , i+1 );
+    }
 
     data.write_to_csv( "qt_data.out" );
 

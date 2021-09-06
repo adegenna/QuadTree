@@ -78,27 +78,36 @@ def make_simdata_video( buckets , data , mp4name='simvideo.mp4' , fig=None ):
     ani.save('qt.mp4' )
 
 
-def plot_entire_qt( buckets , data ):
+def plot_entire_qt( buckets , data , ax=None ):
 
-    plt.scatter( data[:,0] , data[:,1] , s=4 )
+    if ax is None:
+        fig   = plt.figure( 10 , figsize=(8,8) )
+        ax    = fig.gca()
+
+    ax.scatter( data[:,0] , data[:,1] , s=4 , c='r' )
 
     for bi in buckets:
-        plt.plot( bi.x , bi.y , 'b' )
+        ax.plot( bi.x , bi.y , 'b' )
 
-    plt.gca().set_aspect('equal')
-    plt.xticks([])
-    plt.yticks([])
+    ax.set_aspect('equal')
+    ax.set_xticks([])
+    ax.set_yticks([])
 
     plt.tight_layout()
     
-    plt.show()
-
 
 if __name__ == "__main__":
 
     data    = np.genfromtxt( '../build/qt_data.out' , delimiter=',' )
-    buckets = read_qt_buckets( '../build/qt.out' )
 
-    plot_entire_qt( buckets , data )
+    fig , ax = plt.subplots( 2 , 3 )
 
-    #make_simdata_video( buckets , data )
+    for i in range(6):
+
+        buckets = read_qt_buckets( '../build/qt_level_' + str(i+1) + '.out' )
+
+        plot_entire_qt( buckets , data , ax.ravel()[i] )
+
+    plt.show()
+
+    #make_simdata_video( read_qt_buckets( '../build/qt_level_6.out' ) , data )

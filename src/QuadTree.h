@@ -20,7 +20,9 @@ class QuadTree {
 
         Data2D compute_bucket_neighbors( const Data2D& query );
 
-        void write_to_file( const std::string& filename ) const;
+        void write_to_file_df( const std::string& filename ) const;
+
+        void write_to_file_bf( const std::string& filename ) const;
 
     private:
 
@@ -36,5 +38,7 @@ class QuadTree {
         std::shared_ptr<QuadTree> child_se_;
 
 };
+
+void write_bbox_coords_to_file( const QuadTree& qt , const std::string& filename );
 
 #endif

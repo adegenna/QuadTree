@@ -2,6 +2,7 @@ from types import new_class
 from typing import List
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from dataclasses import dataclass
 
 
@@ -46,25 +47,58 @@ def read_qt_buckets( f_qt : str ):
     return buckets
 
 
-def main( f_qt : str , f_data : str ):
+def plot_state_snapshot( bucket , data , ax=None ):
 
-    data    = np.genfromtxt( f_data , delimiter=',' )
-    buckets = read_qt_buckets( f_qt )
+    if ax is None:
+        fig   = plt.figure( 10 , figsize=(8,8) )
+        ax    = fig.gca()
+
+    ax.scatter( data[:,0] , data[:,1] , c='r' , s=4 )
+
+    ai , = ax.plot( bucket.x , bucket.y , 'b' )
+
+    ax.set_aspect('equal')
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    plt.tight_layout()
+
+    return ai
+
+def make_simdata_video( buckets , data , mp4name='simvideo.mp4' , fig=None ):
+
+    if fig is None:
+        fig   = plt.figure( 10 , figsize=(8,8) )
+    ax    = fig.gca()
     
+    plotframe_qt = lambda xi : [ plot_state_snapshot( xi , data , ax ) ]
+
+    ani = animation.FuncAnimation( fig , plotframe_qt , frames=buckets , interval=20 , blit=True )
+
+    ani.save('qt.mp4' )
+
+
+def plot_entire_qt( buckets , data ):
+
     plt.scatter( data[:,0] , data[:,1] , s=4 )
 
-    for boxi in buckets:
-        plt.plot( boxi.x , boxi.y , 'b' )
+    for bi in buckets:
+        plt.plot( bi.x , bi.y , 'b' )
 
     plt.gca().set_aspect('equal')
     plt.xticks([])
     plt.yticks([])
 
     plt.tight_layout()
-
+    
     plt.show()
 
 
 if __name__ == "__main__":
 
-    main( '../build/qt.out' , '../build/qt_data.out' )
+    data    = np.genfromtxt( '../build/qt_data.out' , delimiter=',' )
+    buckets = read_qt_buckets( '../build/qt.out' )
+
+    plot_entire_qt( buckets , data )
+
+    #make_simdata_video( buckets , data )

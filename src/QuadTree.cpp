@@ -27,11 +27,60 @@ QuadTree::~QuadTree() {
 
 };
 
-void QuadTree::write_to_file( const string& filename ) const {
+void QuadTree::write_to_file_df( const string& filename ) const {
+
+    write_bbox_coords_to_file( *this , filename );
+
+    if ( child_sw_ != nullptr )
+        child_sw_->write_to_file_df( filename );
+
+    if ( child_nw_ != nullptr )
+        child_nw_->write_to_file_df( filename );
+
+    if ( child_ne_ != nullptr )
+        child_ne_->write_to_file_df( filename );
+
+    if ( child_se_ != nullptr )
+        child_se_->write_to_file_df( filename );
+
+};
+
+void QuadTree::write_to_file_bf( const string& filename ) const {
+
+    // write first
+    if ( child_sw_ != nullptr )
+        write_bbox_coords_to_file( *child_sw_ , filename );
+
+    if ( child_nw_ != nullptr )
+        write_bbox_coords_to_file( *child_nw_ , filename );
+
+    if ( child_ne_ != nullptr )
+        write_bbox_coords_to_file( *child_ne_ , filename );
+
+    if ( child_se_ != nullptr )
+        write_bbox_coords_to_file( *child_se_ , filename );
+
+    // recursive calls
+    if ( child_sw_ != nullptr )
+        child_sw_->write_to_file_bf( filename );
+
+    if ( child_nw_ != nullptr )
+        child_nw_->write_to_file_bf( filename );
+
+    if ( child_ne_ != nullptr )
+        child_ne_->write_to_file_bf( filename );
+
+    if ( child_se_ != nullptr )
+        child_se_->write_to_file_bf( filename );
+
+};
+
+
+void write_bbox_coords_to_file( const QuadTree& qt , const std::string& filename ) {
 
     ofstream outfile_ij( filename , ios_base::app );
     
-    BoundingBox bbox = get_bounding_box();
+    BoundingBox bbox = qt.get_bounding_box();
 
     outfile_ij << "bucket" << endl;
     outfile_ij << "sw : " << bbox.get_sw()[0] << " , " << bbox.get_sw()[1] << endl;
@@ -40,17 +89,5 @@ void QuadTree::write_to_file( const string& filename ) const {
     outfile_ij << "se : " << bbox.get_se()[0] << " , " << bbox.get_se()[1] << endl;
 
     outfile_ij.close();
-
-    if ( child_sw_ != nullptr )
-        child_sw_->write_to_file( filename );
-
-    if ( child_nw_ != nullptr )
-        child_nw_->write_to_file( filename );
-
-    if ( child_ne_ != nullptr )
-        child_ne_->write_to_file( filename );
-
-    if ( child_se_ != nullptr )
-        child_se_->write_to_file( filename );
 
 };

@@ -27,7 +27,7 @@ int main( ) {
 
     QuadTree qt = QuadTree( data , data.compute_bbox() , 8 );
 
-    qt.write_to_file( "qt.out" );
+    qt.write_to_file_bf( "qt.out" );
 
     data.write_to_csv( "qt_data.out" );
 

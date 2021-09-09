@@ -7,24 +7,22 @@
 #include <memory>
 
 #include "BoundingBox.h"
+#include "Data.h"
 
-
-class Data2D {
+class Data2D : public Data {
 
     public:
 
         Data2D();
         ~Data2D();
-
-        void push_back( const std::array<double,2>& xy );
         
-        std::array<double,2> get_next_point();
-
         BoundingBox compute_bbox() const;
 
-        Data2D compute_data_in_bbox( const BoundingBox& bbox ) const;
+        std::unique_ptr<Data> compute_data_in_bbox( const BoundingBox& bbox ) const;
 
         int size() const { return data_.size(); };
+
+        void push_back( const std::array<double,2>& xy );
 
         void write_to_csv( const std::string& filename ) const;
 
@@ -40,8 +38,6 @@ class Data2D {
 
         std::vector< std::array<double,2> > data_;
         
-        int idx_next_ = 0;
-
 };
 
 #endif

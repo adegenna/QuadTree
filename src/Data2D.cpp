@@ -23,14 +23,6 @@ void Data2D::push_back( const array<double,2>& xy ) {
 
 };
 
-array<double,2> Data2D::get_next_point() {
-
-    assert( idx_next_ < data_.size() );
-
-    return data_[ ++idx_next_ ];
-
-};
-
 void Data2D::write_to_csv( const string &filename ) const {
     
     ofstream outfile_ij(filename);
@@ -43,7 +35,7 @@ void Data2D::write_to_csv( const string &filename ) const {
 
 };
 
-Data2D Data2D::compute_data_in_bbox( const BoundingBox& bbox ) const {
+unique_ptr<Data> Data2D::compute_data_in_bbox( const BoundingBox& bbox ) const {
 
     vector<array<double,2>> bbox_xy;
     
@@ -54,7 +46,7 @@ Data2D Data2D::compute_data_in_bbox( const BoundingBox& bbox ) const {
     for ( auto xyi : bbox_xy )
         bbox_data.push_back( xyi );
 
-    return bbox_data;
+    return make_unique<Data2D>(bbox_data);
 
 };
 

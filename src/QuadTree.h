@@ -6,20 +6,18 @@
 #include <vector>
 #include <memory>
 
-#include "Data2D.h"
+#include "Data.h"
 
 
 class QuadTree {
 
     public:
 
-        QuadTree( const Data2D& data , const BoundingBox& bbox , int bucketsize );
+        QuadTree( std::shared_ptr<Data> data , const BoundingBox& bbox , int bucketsize );
         ~QuadTree();
 
         BoundingBox get_bounding_box() const { return bbox_; };
-
-        Data2D compute_bucket_neighbors( const Data2D& query );
-
+        
         void write_to_file_df( const std::string& filename ) const;
 
         void write_to_file_bf( const std::string& filename , int level ) const;
@@ -28,7 +26,7 @@ class QuadTree {
 
     private:
 
-        Data2D data_;
+        std::shared_ptr<Data> data_;
 
         BoundingBox bbox_;
 

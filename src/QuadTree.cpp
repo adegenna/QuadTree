@@ -5,14 +5,15 @@
 
 #include "QuadTree.h"
 #include "Data.h"
+#include "QTSCreator.h"
 
 using namespace std;
 
 
-QuadTree::QuadTree( shared_ptr<Data> data , const BoundingBox& bbox , int bucketsize ) 
-    : data_(data) , bbox_(bbox) , k_(bucketsize) {
+QuadTree::QuadTree( shared_ptr<Data> data , const BoundingBox& bbox , int threshold ) 
+    : data_(data) , bbox_(bbox) , k_(threshold) {
 
-    if ( data_->size() > k_ ) {
+    if ( QTSCreator( data_ , k_ ).factory_make_qts()->should_quad_divide() ) {
 
         child_sw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_sw() ) , bbox_.compute_quaddiv_sw() , k_ ) );
         child_nw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_nw() ) , bbox_.compute_quaddiv_nw() , k_ ) );
@@ -68,6 +69,9 @@ void QuadTree::write_to_file_bf( const string& filename , int level ) const {
     }
 
 };
+
+
+
 
 vector<shared_ptr<QuadTree>> QuadTree::get_children( ) const {
 

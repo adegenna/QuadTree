@@ -13,7 +13,7 @@ class QuadTree {
 
     public:
 
-        QuadTree( std::shared_ptr<Data> data , const BoundingBox& bbox , int bucketsize );
+        QuadTree( std::shared_ptr<Data> data , const BoundingBox& bbox , int threshold );
         ~QuadTree();
 
         BoundingBox get_bounding_box() const { return bbox_; };

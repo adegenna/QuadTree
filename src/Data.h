@@ -15,6 +15,12 @@ class Data {
 
         virtual int size() const = 0;
 
+        std::string get_datatype() const { return datatype_; };
+
+    protected:
+
+        std::string datatype_;
+
 };
 
 

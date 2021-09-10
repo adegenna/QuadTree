@@ -17,10 +17,10 @@ class BoundingBox {
                      const std::array<double,2>& se );
         ~BoundingBox();
 
-        std::array<double,2> get_sw() { return sw_; };
-        std::array<double,2> get_nw() { return nw_; };
-        std::array<double,2> get_ne() { return ne_; };
-        std::array<double,2> get_se() { return se_; };
+        std::array<double,2> get_sw() const { return sw_; };
+        std::array<double,2> get_nw() const { return nw_; };
+        std::array<double,2> get_ne() const { return ne_; };
+        std::array<double,2> get_se() const { return se_; };
 
         BoundingBox compute_quaddiv_sw() const;
         BoundingBox compute_quaddiv_nw() const;

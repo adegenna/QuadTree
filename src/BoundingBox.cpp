@@ -88,3 +88,15 @@ std::array<double,2> BoundingBox::center() const {
     return std::array<double,2> { 0.5 * ( se_[0] + sw_[0] ) , 0.5 * ( se_[1] + ne_[1] ) };
 
 };
+
+double BoundingBox::compute_width() const {
+
+    return se_[0] - sw_[0];
+
+};
+
+double BoundingBox::compute_height() const {
+
+    return ne_[1] - se_[1];
+
+};

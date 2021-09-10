@@ -5,15 +5,14 @@
 
 #include "QuadTree.h"
 #include "Data.h"
-#include "QTSCreator.h"
 
 using namespace std;
 
 
 QuadTree::QuadTree( shared_ptr<Data> data , const BoundingBox& bbox , int threshold ) 
     : data_(data) , bbox_(bbox) , k_(threshold) {
-
-    if ( QTSCreator( data_ , k_ ).factory_make_qts()->should_quad_divide() ) {
+    
+    if ( data_->is_exceeding_threshold( k_ ) ) {
 
         child_sw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_sw() ) , bbox_.compute_quaddiv_sw() , k_ ) );
         child_nw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_nw() ) , bbox_.compute_quaddiv_nw() , k_ ) );

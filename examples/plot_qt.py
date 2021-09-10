@@ -84,7 +84,8 @@ def plot_entire_qt( buckets , data , ax=None ):
         fig   = plt.figure( 10 , figsize=(8,8) )
         ax    = fig.gca()
 
-    ax.scatter( data[:,0] , data[:,1] , s=4 , c='r' )
+    if data is not None:
+        ax.scatter( data[:,0] , data[:,1] , s=4 , c='r' )
 
     for bi in buckets:
         ax.plot( bi.x , bi.y , 'b' )
@@ -98,7 +99,10 @@ def plot_entire_qt( buckets , data , ax=None ):
 
 if __name__ == "__main__":
 
-    data    = np.genfromtxt( '../build/qt_data.out' , delimiter=',' )
+    try:
+        data    = np.genfromtxt( '../build/qt_data.out' , delimiter=',' )
+    except:
+        data = None
 
     fig , ax = plt.subplots( 2 , 3 )
 

@@ -62,3 +62,56 @@ void ImageData::write( const std::string& filename ) const {
     data_.save_image( filename );
 
 };
+
+
+bool ImageData::is_exceeding_threshold( double threshold ) const {
+
+    if ( compute_variance() > threshold )
+        return true;
+    return false;
+
+};
+
+array<double,3> ImageData::compute_mean() const {
+
+    array<double,3> mean{ 0.0 , 0.0 , 0.0 };
+
+    for (unsigned int x = 0; x < int(data_.width()); ++x) {
+
+        for (unsigned int y = 0; y < int(data_.height()); ++y) {
+        
+            rgb_t p_xy = data_.get_pixel( x , y );
+
+            mean[0] += p_xy.red / ( double(data_.pixel_count()) );
+            mean[1] += p_xy.green / ( double(data_.pixel_count()) );
+            mean[2] += p_xy.blue / ( double(data_.pixel_count()) );
+
+      }
+  
+   }
+
+   return mean;
+
+};
+
+double ImageData::compute_variance() const {
+
+    array<double,3> mean = compute_mean();
+
+    double var = 0.0;
+
+    for (unsigned int x = 0; x < int(data_.width()); ++x) {
+
+        for (unsigned int y = 0; y < int(data_.height()); ++y) {
+        
+            rgb_t p_xy = data_.get_pixel( x , y );
+
+            var += pow( p_xy.red - mean[0] , 2 ) + pow( p_xy.green - mean[1] , 2 ) + pow( p_xy.blue - mean[2] , 2 ) / ( double(data_.pixel_count()) );
+
+      }
+  
+   }
+
+   return var;
+
+};

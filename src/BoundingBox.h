@@ -29,6 +29,10 @@ class BoundingBox {
 
         bool is_in_bbox( const std::array<double,2>& xy ) const;
 
+        double compute_width() const;
+
+        double compute_height() const;
+
     private:
 
         void assert_valid_coordinates( const std::array<double,2>& sw , 

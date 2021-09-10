@@ -33,6 +33,8 @@ class Data2D : public Data {
 
         std::vector<double> get_vector_x() const;
         std::vector<double> get_vector_y() const;
+        
+        bool is_exceeding_threshold( double threshold ) const;
 
     private:
 

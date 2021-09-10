@@ -24,9 +24,6 @@ add_executable( ex_rand
   src/BoundingBox.cpp
   src/Data2D.cpp
   src/QuadTree.cpp
-  src/QTDivisionScatteredData.cpp
-  src/QTDivisionBitmapData.cpp
-  src/QTSCreator.cpp
 )
 
 add_executable( ex_png
@@ -34,9 +31,6 @@ add_executable( ex_png
   src/BoundingBox.cpp
   src/ImageData.cpp
   src/QuadTree.cpp
-  src/QTDivisionScatteredData.cpp
-  src/QTDivisionBitmapData.cpp
-  src/QTSCreator.cpp
   ~/bitmap/bitmap_image.hpp
 )
 

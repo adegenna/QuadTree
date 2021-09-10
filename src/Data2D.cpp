@@ -122,3 +122,9 @@ vector<double> Data2D::get_vector_y() const {
     return vy;
 
 };
+
+bool Data2D::is_exceeding_threshold( double threshold ) const {
+
+    return ( size() > threshold );
+
+};

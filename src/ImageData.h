@@ -23,12 +23,17 @@ class ImageData : public Data {
         bitmap_image get_data() const { return data_; };
 
         void write( const std::string& filename ) const;
+        
+        bool is_exceeding_threshold( double threshold ) const;
 
     private:
 
         bitmap_image data_;
         int x0_ = 0;
         int y0_ = 0;
+
+        std::array<double,3> compute_mean() const;
+        double compute_variance() const;
 
 };
 

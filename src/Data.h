@@ -15,7 +15,10 @@ class Data {
 
         virtual int size() const = 0;
 
+        virtual bool is_exceeding_threshold( double threshold ) const = 0;
+
         std::string get_datatype() const { return datatype_; };
+
 
     protected:
 

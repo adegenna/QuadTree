@@ -28,5 +28,4 @@ This example should compute a quadtree on noisy sinusoidal data:
 
 QuadTree also can be applied to image compression, as in this example:
 
-<img src=https://user-images.githubusercontent.com/2964258/132998779-610bc775-885b-4e1b-a3ba-58e0f2c24a4e.png width="640">
-
+![qt_compress_4](https://user-images.githubusercontent.com/2964258/133005737-ba11f535-c936-4de2-adf1-5b54f6232e24.png)

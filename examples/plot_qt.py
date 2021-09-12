@@ -3,8 +3,8 @@ from typing import List
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from matplotlib.patches import Rectangle
 from dataclasses import dataclass
-
 
 @dataclass
 class Bucket:
@@ -22,10 +22,19 @@ class Bucket:
     def y( self ):
         return [ self.sw[1] , self.nw[1] , self.ne[1] , self.se[1] , self.sw[1] ]
 
+    @property
+    def width( self ):
+        return self.se[0] - self.sw[0]
+
+    @property
+    def height( self ):
+        return self.nw[1] - self.sw[1]
+
     
 def read_qt_buckets( f_qt : str ):
 
     data = []
+    vals = []
 
     with open(f_qt) as f:
         
@@ -38,13 +47,18 @@ def read_qt_buckets( f_qt : str ):
             except:
                 pass
 
+            try:
+                vals.append( [ float(el) for el in line.split(' rgb_mean : ')[-1].split(',') ] )
+            except:
+                pass
+
     buckets = []
     
     for i in range( len(data) // 4 ):
         
         buckets.append( Bucket( data[4*i] , data[4*i+1] , data[4*i+2] , data[4*i+3] ) )
 
-    return buckets
+    return buckets , vals
 
 
 def plot_state_snapshot( bucket , data , ax=None ):
@@ -78,7 +92,21 @@ def make_simdata_video( buckets , data , mp4name='simvideo.mp4' , fig=None ):
     ani.save('qt.mp4' )
 
 
-def plot_entire_qt( buckets , data , ax=None ):
+def fill_bucket_rgb( ax , vi , bi : Bucket ):
+    
+    rgba = [ vij/255. for vij in vi ]
+    rgba.append(1)
+
+    ax.add_patch( Rectangle( ( bi.sw[0] , bi.sw[1] ) , bi.width , bi.height , 
+             edgecolor = 'pink' ,
+             facecolor = rgba ,
+             fill=True ,
+             lw=1 ) )
+    
+    print( rgba )
+    
+
+def plot_entire_qt( buckets , data , vals=None , ax=None ):
 
     if ax is None:
         fig   = plt.figure( 10 , figsize=(8,8) )
@@ -87,8 +115,12 @@ def plot_entire_qt( buckets , data , ax=None ):
     if data is not None:
         ax.scatter( data[:,0] , data[:,1] , s=4 , c='r' )
 
+    if vals is not None:
+        for (vi,bi) in zip(vals,buckets):
+            fill_bucket_rgb( ax , vi , bi )
+
     for bi in buckets:
-        ax.plot( bi.x , bi.y , 'b' )
+        ax.plot( bi.x , bi.y , 'b' , lw=1 )
 
     ax.set_aspect('equal')
     ax.set_xticks([])
@@ -108,9 +140,9 @@ if __name__ == "__main__":
 
     for i in range(6):
 
-        buckets = read_qt_buckets( '../build/qt_level_' + str(i+1) + '.out' )
+        buckets , vals = read_qt_buckets( '../build/qt_level_' + str(i+1) + '.out' )
 
-        plot_entire_qt( buckets , data , ax.ravel()[i] )
+        plot_entire_qt( buckets , data , vals , ax.ravel()[i] )
 
     plt.show()
 

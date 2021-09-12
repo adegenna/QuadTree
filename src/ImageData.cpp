@@ -5,6 +5,8 @@ using namespace std;
 ImageData::ImageData( const std::string& filename ) 
  : bmp_( bitmap_image( filename ) ) , data_( GlobalPixelCoords( bmp_.width() , bmp_.height() ) ) {
 
+     bmp_mean_ = compute_mean();
+
 };
 
 ImageData::ImageData( const bitmap_image& bmp_parent , const GlobalPixelCoords& data_parent , int x0 , int y0 , int width , int height )
@@ -12,15 +14,25 @@ ImageData::ImageData( const bitmap_image& bmp_parent , const GlobalPixelCoords& 
     
     std::array<double,2> dxy = convert_bboxXY_to_bmpXY( x0 - data_.x0() , y0 - data_.y0() );
 
+    // These two conditionals are hacks that fix edge cases, though they shouldn't be necessary...
+
+    if ( dxy[0] + width > bmp_parent.width() ) {
+        dxy[0] = bmp_parent.width() - width;
+    }
+
+    if ( dxy[1] + height > bmp_parent.height() ){
+        dxy[1] = bmp_parent.height() - height;
+    }
+
     bmp_parent.region( dxy[0] , dxy[1] , width , height , bmp_ );
-    
+
     bmp_mean_ = compute_mean();
     
     data_ = GlobalPixelCoords( width , height , x0 , y0 ); // reset parent data for next recursive calls
 
 };
 
-
+// /home/adegennaro/Desktop/flow2.bmp
 ImageData::~ImageData() {
 
 };
@@ -71,9 +83,9 @@ array<double,3> ImageData::compute_mean() const {
 
     array<double,3> mean{ 0.0 , 0.0 , 0.0 };
 
-    for (unsigned int x = 0; x < int(bmp_.width()); ++x) {
+    for (unsigned int x = 0; x < uint(bmp_.width()); ++x) {
 
-        for (unsigned int y = 0; y < int(bmp_.height()); ++y) {
+        for (unsigned int y = 0; y < uint(bmp_.height()); ++y) {
         
             rgb_t p_xy = bmp_.get_pixel( x , y );
 
@@ -83,6 +95,10 @@ array<double,3> ImageData::compute_mean() const {
 
       }
   
+   }
+
+   if ( (bmp_.width() == 0) && (bmp_.height() == 0) ){
+       cout << endl << "PIXELS : " << bmp_.pixel_count() << " , (width,height) : " << bmp_.width() << "," << bmp_.height() << endl;
    }
 
    return mean;
@@ -95,9 +111,9 @@ double ImageData::compute_variance() const {
 
     double var = 0.0;
 
-    for (unsigned int x = 0; x < int(bmp_.width()); ++x) {
+    for (unsigned int x = 0; x < uint(bmp_.width()); ++x) {
 
-        for (unsigned int y = 0; y < int(bmp_.height()); ++y) {
+        for (unsigned int y = 0; y < uint(bmp_.height()); ++y) {
         
             rgb_t p_xy = bmp_.get_pixel( x , y );
 

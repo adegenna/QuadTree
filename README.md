@@ -26,6 +26,7 @@ This example should compute a quadtree on noisy sinusoidal data:
 
 ![Figure_1](https://user-images.githubusercontent.com/2964258/132262641-1447c047-f2eb-4fb2-a471-793835a84718.png)
 
-https://user-images.githubusercontent.com/2964258/132245460-8ced6ee5-c2aa-40ff-bc7d-6f5adec5829b.mp4
+QuadTree also can be applied to image compression, as in this example:
 
+<img src=https://user-images.githubusercontent.com/2964258/132998779-610bc775-885b-4e1b-a3ba-58e0f2c24a4e.png width="640">
 

@@ -17,6 +17,8 @@ class Data {
 
         virtual bool is_exceeding_threshold( double threshold ) const = 0;
 
+        virtual void write( const std::string& filename ) const = 0;
+
 };
 
 

@@ -23,7 +23,7 @@ void Data2D::push_back( const array<double,2>& xy ) {
 
 };
 
-void Data2D::write_to_csv( const string &filename ) const {
+void Data2D::write( const string &filename ) const {
     
     ofstream outfile_ij(filename);
     

@@ -33,7 +33,7 @@ int main( ) {
         qt.write_to_file_bf( "qt_level_" + std::to_string(i+1) + ".out" , i+1 );
     }
 
-    data->write_to_csv( "qt_data.out" );
+    data->write( "qt_data.out" );
 
     return 0;
 

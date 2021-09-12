@@ -9,21 +9,14 @@ ImageData::ImageData( const std::string& filename )
 
 ImageData::ImageData( const bitmap_image& bmp_parent , const GlobalPixelCoords& data_parent , int x0 , int y0 , int width , int height )
  : data_( data_parent ) {
-
-    cout << "ctor_imagedata bmp_region args : ";
-    print_xywh( x0 , y0 , data_.x0() , data_.y0() , width , height );
-
+    
     std::array<double,2> dxy = convert_bboxXY_to_bmpXY( x0 - data_.x0() , y0 - data_.y0() );
 
     bmp_parent.region( dxy[0] , dxy[1] , width , height , bmp_ );
-
-    // Now need to reset parent data for next recursive calls
-    data_ = GlobalPixelCoords( width , height , x0 , y0 );
-
-    cout << "  parent_data : "; 
-    print_data_stats( bmp_parent );
-    cout << "  child_data : "; 
-    print_data_stats( bmp_ );
+    
+    bmp_mean_ = compute_mean();
+    
+    data_ = GlobalPixelCoords( width , height , x0 , y0 ); // reset parent data for next recursive calls
 
 };
 
@@ -59,7 +52,9 @@ int ImageData::size() const{
 
 void ImageData::write( const std::string& filename ) const {
 
-    bmp_.save_image( filename );
+    ofstream outfile( filename , ios_base::app );
+    outfile << "rgb_mean : " << bmp_mean_[0] << "," << bmp_mean_[1] << "," << bmp_mean_[2];
+    outfile.close();
 
 };
 
@@ -111,11 +106,7 @@ double ImageData::compute_variance() const {
       }
   
    }
-
-    cout << "var : " << var << endl;
-    cout << "  data stats : ";
-    print_data_stats( bmp_ );
-   
+    
    return var;
 
 };

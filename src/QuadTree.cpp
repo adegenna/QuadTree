@@ -15,10 +15,10 @@ QuadTree::QuadTree( shared_ptr<Data> data , const BoundingBox& bbox , int thresh
     
     if ( data_->is_exceeding_threshold( k_ ) ) {
 
-        child_sw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_sw() ) , bbox_.compute_quaddiv_sw() , k_ ) ); cout << endl;
-        child_nw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_nw() ) , bbox_.compute_quaddiv_nw() , k_ ) ); cout << endl;
-        child_ne_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_ne() ) , bbox_.compute_quaddiv_ne() , k_ ) ); cout << endl;
-        child_se_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_se() ) , bbox_.compute_quaddiv_se() , k_ ) ); cout << endl;
+        child_sw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_sw() ) , bbox_.compute_quaddiv_sw() , k_ ) );
+        child_nw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_nw() ) , bbox_.compute_quaddiv_nw() , k_ ) );
+        child_ne_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_ne() ) , bbox_.compute_quaddiv_ne() , k_ ) );
+        child_se_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_se() ) , bbox_.compute_quaddiv_se() , k_ ) );
 
     }
 
@@ -70,7 +70,17 @@ void QuadTree::write_to_file_bf( const string& filename , int level ) const {
 
 };
 
+void QuadTree::write_to_file_bf_with_data_value( const std::string& filename , int level ) const {
 
+    vector<QuadTree> nodes = get_qt_level_nodes( *this , level );
+
+    for ( auto ni : nodes ) {
+
+        write_bbox_and_data_value_to_file( ni , filename );
+
+    }
+
+};
 
 
 vector<shared_ptr<QuadTree>> QuadTree::get_children( ) const {
@@ -125,6 +135,30 @@ void write_bbox_coords_to_file( const QuadTree& qt , const std::string& filename
     outfile_ij << "ne : " << bbox.get_ne()[0] << " , " << bbox.get_ne()[1] << endl;
     outfile_ij << "se : " << bbox.get_se()[0] << " , " << bbox.get_se()[1] << endl;
 
+    outfile_ij.close();
+
+};
+
+
+void write_bbox_and_data_value_to_file( const QuadTree& qt , const std::string& filename ) {
+    
+    ofstream outfile_ij( filename , ios_base::app );
+    
+    BoundingBox bbox = qt.get_bounding_box();
+
+    outfile_ij << "bucket" << endl;
+    outfile_ij << "sw : " << bbox.get_sw()[0] << " , " << bbox.get_sw()[1] << endl;
+    outfile_ij << "nw : " << bbox.get_nw()[0] << " , " << bbox.get_nw()[1] << endl;
+    outfile_ij << "ne : " << bbox.get_ne()[0] << " , " << bbox.get_ne()[1] << endl;
+    outfile_ij << "se : " << bbox.get_se()[0] << " , " << bbox.get_se()[1] << endl;
+
+    outfile_ij << "data_value : ";
+    outfile_ij.close();
+
+    qt.get_data()->write( filename );
+    
+    outfile_ij.open( filename , ios_base::app );
+    outfile_ij << endl;
     outfile_ij.close();
 
 };

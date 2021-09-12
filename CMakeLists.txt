@@ -26,8 +26,8 @@ add_executable( ex_rand
   src/QuadTree.cpp
 )
 
-add_executable( ex_png
-  examples/example_png.cpp
+add_executable( ex_bmp
+  examples/example_bmp.cpp
   src/BoundingBox.cpp
   src/ImageData.cpp
   src/QuadTree.cpp

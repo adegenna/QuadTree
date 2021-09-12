@@ -24,8 +24,8 @@ class Data2D : public Data {
 
         void push_back( const std::array<double,2>& xy );
 
-        void write_to_csv( const std::string& filename ) const;
-
+        void write( const std::string& filename ) const;
+        
         double compute_min_x() const;
         double compute_min_y() const;
         double compute_max_x() const;

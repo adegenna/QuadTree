@@ -22,7 +22,11 @@ class QuadTree {
 
         void write_to_file_bf( const std::string& filename , int level ) const;
 
+        void write_to_file_bf_with_data_value( const std::string& filename , int level ) const;
+
         std::vector<std::shared_ptr<QuadTree>> get_children( ) const;
+
+        std::shared_ptr<Data> get_data() const { return data_; };
 
     private:
 
@@ -40,6 +44,8 @@ class QuadTree {
 };
 
 void write_bbox_coords_to_file( const QuadTree& qt , const std::string& filename );
+
+void write_bbox_and_data_value_to_file( const QuadTree& qt , const std::string& filename );
 
 std::vector<QuadTree> get_qt_level_nodes( const QuadTree& qt , int level );
 

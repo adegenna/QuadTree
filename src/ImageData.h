@@ -54,6 +54,7 @@ class ImageData : public Data {
 
         bitmap_image bmp_;
         GlobalPixelCoords data_;
+        std::array<double,3> bmp_mean_;
 
         std::array<double,3> compute_mean() const;
         double compute_variance() const;

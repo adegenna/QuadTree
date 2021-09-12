@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
+#include <iostream>
 
 #include "QuadTree.h"
 #include "Data.h"
@@ -14,10 +15,10 @@ QuadTree::QuadTree( shared_ptr<Data> data , const BoundingBox& bbox , int thresh
     
     if ( data_->is_exceeding_threshold( k_ ) ) {
 
-        child_sw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_sw() ) , bbox_.compute_quaddiv_sw() , k_ ) );
-        child_nw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_nw() ) , bbox_.compute_quaddiv_nw() , k_ ) );
-        child_ne_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_ne() ) , bbox_.compute_quaddiv_ne() , k_ ) );
-        child_se_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_se() ) , bbox_.compute_quaddiv_se() , k_ ) );
+        child_sw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_sw() ) , bbox_.compute_quaddiv_sw() , k_ ) ); cout << endl;
+        child_nw_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_nw() ) , bbox_.compute_quaddiv_nw() , k_ ) ); cout << endl;
+        child_ne_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_ne() ) , bbox_.compute_quaddiv_ne() , k_ ) ); cout << endl;
+        child_se_ = make_shared<QuadTree>( QuadTree( data_->compute_data_in_bbox( bbox_.compute_quaddiv_se() ) , bbox_.compute_quaddiv_se() , k_ ) ); cout << endl;
 
     }
 

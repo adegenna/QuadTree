@@ -1,4 +1,4 @@
-#include <cassert>
+#include <assert.h>
 
 #include "BoundingBox.h"
 
@@ -25,7 +25,7 @@ void BoundingBox::assert_valid_coordinates( const std::array<double,2>& sw ,
     assert( (sw[0] == nw[0]) && (sw[1] < nw[1]) );
     assert( (sw[1] == se[1]) && (sw[0] < se[0]) );
     assert( (ne[0] == se[0]) && (ne[1] == nw[1]) );
-
+    
 };
 
 bool BoundingBox::is_in_bbox( const std::array<double,2>& xy ) const {

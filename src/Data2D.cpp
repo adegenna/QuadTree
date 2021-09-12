@@ -11,8 +11,6 @@ using namespace std;
 
 Data2D::Data2D() {
 
-    datatype_ = "Data2D";
-
 };
 
 Data2D::~Data2D() {

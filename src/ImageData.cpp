@@ -2,29 +2,28 @@
 
 using namespace std;
 
-ImageData::ImageData( const std::string& filename , int x0 , int y0 ) 
- : x0_(x0) , y0_(y0) {
-    
-    data_ = bitmap_image( filename );
-    
-    datatype_ = "ImageData";
+ImageData::ImageData( const std::string& filename ) 
+ : bmp_( bitmap_image( filename ) ) , data_( GlobalPixelCoords( bmp_.width() , bmp_.height() ) ) {
 
 };
 
-ImageData::ImageData( const std::string& filename ) {
+ImageData::ImageData( const bitmap_image& bmp_parent , const GlobalPixelCoords& data_parent , int x0 , int y0 , int width , int height )
+ : data_( data_parent ) {
 
-    data_ = bitmap_image( filename );
+    cout << "ctor_imagedata bmp_region args : ";
+    print_xywh( x0 , y0 , data_.x0() , data_.y0() , width , height );
 
-    datatype_ = "ImageData";
+    std::array<double,2> dxy = convert_bboxXY_to_bmpXY( x0 - data_.x0() , y0 - data_.y0() );
 
-};
+    bmp_parent.region( dxy[0] , dxy[1] , width , height , bmp_ );
 
-ImageData::ImageData( const bitmap_image& data_bmp , int x0 , int y0 , int width , int height )
- : x0_(x0) , y0_(y0) {
+    // Now need to reset parent data for next recursive calls
+    data_ = GlobalPixelCoords( width , height , x0 , y0 );
 
-    data_bmp.region( x0_ , y0_ , width , height , data_ );
-
-    datatype_ = "ImageData";
+    cout << "  parent_data : "; 
+    print_data_stats( bmp_parent );
+    cout << "  child_data : "; 
+    print_data_stats( bmp_ );
 
 };
 
@@ -35,18 +34,19 @@ ImageData::~ImageData() {
 
 BoundingBox ImageData::compute_bbox( ) const {
 
-    return BoundingBox( array<double,2>{ double( x0_ + data_.height() ) , double( y0_ ) } ,
-                        array<double,2>{ double( x0_ ) , double( y0_ ) } , 
-                        array<double,2>{ double( x0_ ) , double( y0_ + data_.width() ) } ,
-                        array<double,2>{ double( x0_ + data_.height() ) , double( y0_ + data_.width() ) } );
+    return BoundingBox( array<double,2>{ double( data_.x0() ) , double( data_.y0() - data_.height() ) } , 
+                        array<double,2>{ double( data_.x0() ) , double( data_.y0() ) } , 
+                        array<double,2>{ double( data_.x0() + data_.width() ) , double( data_.y0() ) } , 
+                        array<double,2>{ double( data_.x0() + data_.width() ) , double( data_.y0() - data_.height() ) } );
 
 };
 
 unique_ptr<Data> ImageData::compute_data_in_bbox( const BoundingBox& bbox ) const {
 
-    return make_unique<ImageData>( ImageData( data_ , bbox.get_nw()[0] , bbox.get_nw()[1] , 
+    return make_unique<ImageData>( ImageData( bmp_ , data_ , 
+                                              bbox.get_nw()[0] , bbox.get_nw()[1] , 
                                               bbox.get_se()[0] - bbox.get_nw()[0] , 
-                                              bbox.get_se()[1] - bbox.get_nw()[1] ) );
+                                              bbox.get_nw()[1] - bbox.get_se()[1] ) );
 
 };
 
@@ -59,7 +59,7 @@ int ImageData::size() const{
 
 void ImageData::write( const std::string& filename ) const {
 
-    data_.save_image( filename );
+    bmp_.save_image( filename );
 
 };
 
@@ -76,15 +76,15 @@ array<double,3> ImageData::compute_mean() const {
 
     array<double,3> mean{ 0.0 , 0.0 , 0.0 };
 
-    for (unsigned int x = 0; x < int(data_.width()); ++x) {
+    for (unsigned int x = 0; x < int(bmp_.width()); ++x) {
 
-        for (unsigned int y = 0; y < int(data_.height()); ++y) {
+        for (unsigned int y = 0; y < int(bmp_.height()); ++y) {
         
-            rgb_t p_xy = data_.get_pixel( x , y );
+            rgb_t p_xy = bmp_.get_pixel( x , y );
 
-            mean[0] += p_xy.red / ( double(data_.pixel_count()) );
-            mean[1] += p_xy.green / ( double(data_.pixel_count()) );
-            mean[2] += p_xy.blue / ( double(data_.pixel_count()) );
+            mean[0] += p_xy.red / ( double(bmp_.pixel_count()) );
+            mean[1] += p_xy.green / ( double(bmp_.pixel_count()) );
+            mean[2] += p_xy.blue / ( double(bmp_.pixel_count()) );
 
       }
   
@@ -100,18 +100,66 @@ double ImageData::compute_variance() const {
 
     double var = 0.0;
 
-    for (unsigned int x = 0; x < int(data_.width()); ++x) {
+    for (unsigned int x = 0; x < int(bmp_.width()); ++x) {
 
-        for (unsigned int y = 0; y < int(data_.height()); ++y) {
+        for (unsigned int y = 0; y < int(bmp_.height()); ++y) {
         
-            rgb_t p_xy = data_.get_pixel( x , y );
+            rgb_t p_xy = bmp_.get_pixel( x , y );
 
-            var += pow( p_xy.red - mean[0] , 2 ) + pow( p_xy.green - mean[1] , 2 ) + pow( p_xy.blue - mean[2] , 2 ) / ( double(data_.pixel_count()) );
+            var += ( pow( p_xy.red - mean[0] , 2 ) + pow( p_xy.green - mean[1] , 2 ) + pow( p_xy.blue - mean[2] , 2 ) ) / ( double(bmp_.pixel_count()) );
 
       }
   
    }
 
+    cout << "var : " << var << endl;
+    cout << "  data stats : ";
+    print_data_stats( bmp_ );
+   
    return var;
+
+};
+
+std::array<double,2> ImageData::convert_bmpXY_to_bboxXY( double x , double y ) const {
+
+    return std::array<double,2> { x , -y };
+
+};
+
+std::array<double,2> ImageData::convert_bmpXY_to_bboxXY( const std::array<double,2>& xy ) const {
+
+    return std::array<double,2> { xy[0] , -xy[1] };
+
+};
+
+std::array<double,2> ImageData::convert_bboxXY_to_bmpXY( double x , double y ) const {
+
+    return std::array<double,2> { x , -y };
+
+};
+
+
+
+GlobalPixelCoords::GlobalPixelCoords( int width , int height ) 
+ : width_(width) , height_(height) {
+
+};
+
+GlobalPixelCoords::GlobalPixelCoords( int width , int height , int x0 , int y0 ) 
+ : x0_(x0) , y0_(y0) , width_(width) , height_(height) {
+
+};
+
+
+
+void print_data_stats( const bitmap_image& bmp ) {
+
+    cout << "data.width : " << bmp.width() << " , data.height : " << bmp.height() << endl;
+
+};
+
+void print_xywh( int x , int y , int x0 , int y0 , int width , int height ) {
+
+    cout << "(x,y) : (" << x << "," << y << ") (x0,y0) : (" << x0 << "," << y0 << ") width : " << width << " height : " << height << endl;
 
 };

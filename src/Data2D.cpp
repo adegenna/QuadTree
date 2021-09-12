@@ -23,7 +23,7 @@ void Data2D::push_back( const array<double,2>& xy ) {
 
 };
 
-void Data2D::write( const string &filename ) const {
+void Data2D::write_pts( const string &filename ) const {
     
     ofstream outfile_ij(filename);
     
@@ -32,6 +32,16 @@ void Data2D::write( const string &filename ) const {
     }
     
     outfile_ij.close();
+
+};
+
+void Data2D::write( const string &filename ) const {
+    
+    ofstream outfile( filename , ios::app );
+    
+    outfile << "npts : " << data_.size();
+    
+    outfile.close();
 
 };
 

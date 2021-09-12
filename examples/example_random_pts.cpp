@@ -29,11 +29,11 @@ int main( ) {
 
     QuadTree qt = QuadTree( data , data->compute_bbox() , 8 );
 
-    for ( int i=0; i<8; i++ ){
-        qt.write_to_file_bf( "qt_level_" + std::to_string(i+1) + ".out" , i+1 );
+    for ( int i=0; i<6; i++ ){
+        qt.write_to_file_bf_with_data_value( "qt_level_" + std::to_string(i+1) + ".out" , i+1 );
     }
 
-    data->write( "qt_data.out" );
+    data->write_pts( "qt_data.out" );
 
     return 0;
 

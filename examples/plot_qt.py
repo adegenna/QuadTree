@@ -33,6 +33,18 @@ class Bucket:
     
 def read_qt_buckets( f_qt : str ):
 
+    def read_rgb_mean( line , vals ):
+        try:
+            assert( 'rgb_mean' in line )
+            return vals.append( [ float(el) for el in line.split(' rgb_mean : ')[-1].split(',') ] )
+        except: pass
+
+    def read_npts( line , vals ):
+        try: 
+            assert( 'npts' in line )
+            return vals.append( [ float(el) for el in line.split(' npts : ')[-1].split(',') ] )
+        except: pass
+
     data = []
     vals = []
 
@@ -43,14 +55,15 @@ def read_qt_buckets( f_qt : str ):
             line = line.strip()
             
             try:
+                assert( np.any( [ el in line for el in ['sw','nw','ne','se'] ] ) )
                 data.append( [ float(el) for el in line.split(' : ')[-1:][0].split(' , ') ] )
             except:
                 pass
-
+            
             try:
-                vals.append( [ float(el) for el in line.split(' rgb_mean : ')[-1].split(',') ] )
+                read_rgb_mean( line , vals ) or read_npts( line , vals )
             except:
-                pass
+                raise Exception
 
     buckets = []
     
@@ -93,7 +106,9 @@ def make_simdata_video( buckets , data , mp4name='simvideo.mp4' , fig=None ):
 
 
 def fill_bucket_rgb( ax , vi , bi : Bucket ):
-    
+        
+    assert( len(vi) == 3 )
+
     rgba = [ vij/255. for vij in vi ]
     rgba.append(1)
 
@@ -102,22 +117,34 @@ def fill_bucket_rgb( ax , vi , bi : Bucket ):
              facecolor = rgba ,
              fill=True ,
              lw=1 ) )
-    
-    print( rgba )
-    
 
-def plot_entire_qt( buckets , data , vals=None , ax=None ):
+
+def fill_bucket_npts( ax , vi , bi : Bucket , maxval ):
+    
+    assert( len(vi) == 1 )
+    
+    rgba = [ vi[0]/maxval[0] for i in range(3) ]
+    rgba.append(1)
+
+    ax.add_patch( Rectangle( ( bi.sw[0] , bi.sw[1] ) , bi.width , bi.height , 
+             edgecolor = 'pink' ,
+             facecolor = rgba ,
+             fill=True ,
+             lw=1 ) )
+
+
+def plot_entire_qt( buckets , vals=None , ax=None ):
 
     if ax is None:
         fig   = plt.figure( 10 , figsize=(8,8) )
         ax    = fig.gca()
 
-    if data is not None:
-        ax.scatter( data[:,0] , data[:,1] , s=4 , c='r' )
-
     if vals is not None:
         for (vi,bi) in zip(vals,buckets):
-            fill_bucket_rgb( ax , vi , bi )
+            try:
+                fill_bucket_rgb( ax , vi , bi )
+            except:
+                fill_bucket_npts( ax , vi , bi , max(vals) )
 
     for bi in buckets:
         ax.plot( bi.x , bi.y , 'b' , lw=1 )
@@ -133,8 +160,10 @@ if __name__ == "__main__":
 
     try:
         data    = np.genfromtxt( '../build/qt_data.out' , delimiter=',' )
+        plt.figure()
+        plt.scatter( data[:,0] , data[:,1] , s=4 , c='r' )
     except:
-        data = None
+        pass
 
     fig , ax = plt.subplots( 2 , 3 )
 
@@ -142,7 +171,7 @@ if __name__ == "__main__":
 
         buckets , vals = read_qt_buckets( '../build/qt_level_' + str(i+1) + '.out' )
 
-        plot_entire_qt( buckets , data , vals , ax.ravel()[i] )
+        plot_entire_qt( buckets , vals , ax.ravel()[i] )
 
     plt.show()
 
